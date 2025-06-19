@@ -34,7 +34,6 @@ const userSchema = new Schema({
   publisher: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Publisher",
-    required: true,
   },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },

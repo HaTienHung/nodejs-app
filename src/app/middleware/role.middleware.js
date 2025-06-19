@@ -14,6 +14,7 @@ export function roleMiddleware(roleNames) {
           .status(403)
           .json({ message: "Bạn không có quyền truy cập vào trang!" });
       }
+      console.log("next");
 
       next();
     } catch (err) {

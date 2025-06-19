@@ -1,15 +1,15 @@
 // middlewares/authenticate.js
 import jwt from "jsonwebtoken";
-import getTokenFromHeader from "../../helpers/auth.helper.js";
+import verifyTokenFromHeader from "../../helpers/auth.helper.js";
+import { TYPE } from "../../constants/verifyType.js";
 
 export function verifyAccessToken(req, res, next) {
-  const accessToken = getTokenFromHeader(req, res);
-
   try {
-    const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
-    // console.log(decoded);
+    // console.log(verifyTokenFromHeader(req, res, TYPE.ACCESS));
+    const payload = verifyTokenFromHeader(req, res, TYPE.ACCESS);
 
-    req.user = decoded;
+    req.user = payload;
+    
     next();
   } catch (err) {
     return res.status(401).json({ message: "Token hết hạn hoặc không hợp lệ" });
@@ -17,11 +17,9 @@ export function verifyAccessToken(req, res, next) {
 }
 
 export function verifyRefreshToken(req, res, next) {
-  const refreshToken = getTokenFromHeader(req, res);
-
   try {
-    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-    req.user = decoded;
+    const payload = verifyTokenFromHeader(req, res, TYPE.REFRESH);
+    req.user = payload;
     next();
   } catch (err) {
     return res.status(401).json({ message: "Token hết hạn hoặc không hợp lệ" });

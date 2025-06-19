@@ -5,7 +5,8 @@ import {
   generateRefreshToken,
   generateAccessToken,
 } from "../../../utils/jwt.js";
-import getTokenFromHeader from "../../../helpers/auth.helper.js";
+import verifyTokenFromHeader from "../../../helpers/auth.helper.js";
+import { TYPE } from "../../../constants/verifyType.js";
 
 class AuthController {
   // [POST]  api/app/auth/login
@@ -63,13 +64,10 @@ class AuthController {
 
   // [POST]  /app/auth/refresh-token
   async refreshToken(req, res) {
-    const refreshToken = getTokenFromHeader(req, res);
-
     try {
-      const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
       const newAccessToken = generateAccessToken({
-        id: payload.id,
-        role: payload.role,
+        id: req.user.id,
+        role: req.user.role,
       });
       res.json({
         newAccessToken,
@@ -81,14 +79,8 @@ class AuthController {
 
   // [POST]  /app/auth/me
   async me(req, res) {
-    const accessToken = getTokenFromHeader(req, res);
-    // console.log(accessToken);
-
     try {
-      const payload = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
-      console.log(payload);
-
-      const user = await User.findOne({ _id: payload.id });
+      const user = await User.findOne({ _id: req.user.id });
       console.log(user);
 
       res.json({
@@ -114,16 +106,8 @@ class AuthController {
 
   // [POST]  api/auth/app/change-password
   async changePassword(req, res) {
-    const authHeader = req.headers.authorization;
-    if (!authHeader?.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Chưa đăng nhập" });
-    }
-
-    const accessToken = authHeader.split(" ")[1];
-
     try {
-      const payload = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
-      const user = await User.findOne({ _id: payload.id }).select("+password");
+      const user = await User.findOne({ _id: req.user.id }).select("+password");
 
       if (!user) {
         return res.status(401).json({ message: "Không tìm thấy người dùng !" });

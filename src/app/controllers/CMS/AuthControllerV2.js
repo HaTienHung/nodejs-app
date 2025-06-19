@@ -71,18 +71,10 @@ class AuthControllerV2 {
   }
   // [POST]  api/auth/cms/refresh-token
   async refreshToken(req, res) {
-    const authHeader = req.headers.authorization;
-    if (!authHeader?.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Chưa đăng nhập" });
-    }
-
-    const refreshToken = authHeader.split(" ")[1];
-
     try {
-      const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
       const newAccessToken = generateAccessToken({
-        id: payload.id,
-        role: payload.role,
+        id: req.user.id,
+        role: req.user.role,
       });
       res.json({
         newAccessToken,
@@ -94,16 +86,8 @@ class AuthControllerV2 {
 
   // [POST]  /cms/auth/me
   async me(req, res) {
-    // const accessToken = getTokenFromHeader(req, res);
-    // console.log(accessToken);
-
     try {
-      const payload = verifyTokenFromHeader(req, res);
-      console.log(payload);
-
-      const user = await User.findOne({ _id: payload.id });
-      console.log(user);
-
+      const user = await User.findOne({ _id: req.user.id });
       res.json({
         user,
       });
@@ -114,16 +98,9 @@ class AuthControllerV2 {
 
   // [POST]  api/auth/cms/change-password
   async changePassword(req, res) {
-    const authHeader = req.headers.authorization;
-    if (!authHeader?.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Chưa đăng nhập" });
-    }
-
-    const accessToken = authHeader.split(" ")[1];
-
     try {
-      const payload = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
-      const user = await User.findOne({ _id: payload.id }).select("+password");
+      const user = await User.findOne({ _id: req.user.id }).select("+password");
+      console.log(user);
 
       if (!user) {
         return res.status(401).json({ message: "Không tìm thấy người dùng !" });
@@ -146,9 +123,9 @@ class AuthControllerV2 {
 
       await user.save();
 
-      res.json({ message: "Cập nhật thành công" });
+      res.status(200).json("Cập nhật thành công");
     } catch (error) {
-      res.json("failed");
+      res.status(500).json("Lỗi từ server");
     }
   }
 }
