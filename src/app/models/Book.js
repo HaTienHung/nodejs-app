@@ -13,10 +13,14 @@ const bookSchema = new Schema({
     type: String,
     default: STATUS.DRAFT,
   },
+  slug: {
+    type: String,
+    require: true,
+  },
   publisher_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Publisher",
-    required: true,
+    required: null,
   },
   author_id: {
     type: mongoose.Schema.Types.ObjectId,
@@ -31,7 +35,6 @@ const bookSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   published_at: { type: Date, default: Date.now },
-  delete_at: { type: Date, default: Date.now },
 });
 
 bookSchema.pre("save", async function (next) {

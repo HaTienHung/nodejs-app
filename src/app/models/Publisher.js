@@ -1,5 +1,6 @@
 // src/models/Role.js
 import mongoose from "mongoose";
+import slugify from "slugify";
 
 const publisherSchema = new mongoose.Schema({
   name: {
@@ -9,8 +10,10 @@ const publisherSchema = new mongoose.Schema({
   },
   slug: {
     type: String,
-    required: true,
     unique: true,
+  },
+  bio: {
+    type: String,
   },
   email: {
     type: String,
@@ -27,6 +30,12 @@ const publisherSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  inactive_at: {
+    type: Date,
+    default: null,
+  },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 });
 
 publisherSchema.pre("save", async function (next) {

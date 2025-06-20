@@ -7,7 +7,18 @@ class BookController {
   // [GET] api/app/books/collection
   async index(req, res) {
     try {
-      const books = await Book.find({});
+      const books = await applyQuery(Book.find(), req.query, {
+        searchFields: ["title", "description"],
+        filterFields: [
+          "status",
+          "category_id",
+          "publisher_id",
+          "author_id",
+          "price",
+          { field: "price", between: ["min_price", "max_price"] },
+        ],
+        sortableFields: ["createdAt", "price", "title"],
+      });
       return res.status(200).json(books);
     } catch (error) {
       return res.status(500), json("Failed");

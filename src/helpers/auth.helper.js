@@ -7,7 +7,7 @@ const verifyTokenFromHeader = (req, res, type) => {
     return res.status(401).json({ message: "Chưa đăng nhập" });
   }
   const token = authHeader.split(" ")[1];
-
+  console.log(jwt.verify(token, process.env.JWT_ACCESS_SECRET));
   const payload =
     type === TYPE.ACCESS
       ? jwt.verify(token, process.env.JWT_ACCESS_SECRET)

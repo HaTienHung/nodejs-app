@@ -10,7 +10,7 @@ import {
   verifyRefreshToken,
 } from "../../app/middleware/authenticate.js";
 import AuthControllerV2 from "../../app/controllers/CMS/AuthControllerV2.js";
-import { roleMiddleware } from "../../app/middleware/role.middleware.js";
+import { roleMiddleware } from "../../app/middleware/role.js";
 import { ROLE_NAME } from "../../constants/role.js";
 
 const router = express.Router();
@@ -51,7 +51,7 @@ router.get(
   "/user-list",
   verifyAccessToken,
   roleMiddleware(ROLE_NAME.ADMIN, ROLE_NAME.PUBLISHER),
-  AuthControllerV2.listUser
+  AuthControllerV2.index
 );
 
 export default router;

@@ -11,7 +11,7 @@ import {
   verifyAccessToken,
   verifyRefreshToken,
 } from "../../app/middleware/authenticate.js";
-import { roleMiddleware } from "../../app/middleware/role.middleware.js";
+import { roleMiddleware } from "../../app/middleware/role.js";
 import { ROLE_NAME } from "../../constants/role.js";
 
 const router = express.Router();

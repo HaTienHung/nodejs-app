@@ -10,7 +10,7 @@ import {
   verifyRefreshToken,
 } from "../../app/middleware/authenticate.js";
 import AuthControllerV2 from "../../app/controllers/CMS/AuthControllerV2.js";
-import { roleMiddleware } from "../../app/middleware/role.middleware.js";
+import { roleMiddleware } from "../../app/middleware/role.js";
 import { ROLE_NAME } from "../../constants/role.js";
 import BookController from "../../app/controllers/APP/BookController.js";
 

@@ -1,4 +1,4 @@
-import User from "../../models/User.js";
+import Author from "../../models/Author.js";
 import Role from "../../models/Role.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -10,7 +10,7 @@ import getTokenFromHeader from "../../../helpers/auth.helper.js";
 import verifyTokenFromHeader from "../../../helpers/auth.helper.js";
 class AuthControllerV2 {
   // [GET]  api/auth/cms/index
-  async listUser(req, res) {
+  async index(req, res) {
     try {
       const users = await User.find({}).populate("role");
       res.json(users);

@@ -1,81 +1,73 @@
 import express from "express";
 import validate from "../../validators/validate.js";
 import autoPickValidated from "../../validators/autoPickValidated.js";
-import {
-  loginValidator,
-  changePasswordValidator,
-} from "../../validators/auth.validator.js";
-import {
-  verifyAccessToken,
-  verifyRefreshToken,
-} from "../../app/middleware/authenticate.js";
-import AuthControllerV2 from "../../app/controllers/CMS/AuthControllerV2.js";
+import { verifyAccessToken } from "../../app/middleware/authenticate.js";
 import { roleMiddleware } from "../../app/middleware/role.js";
 import { ROLE_NAME } from "../../constants/role.js";
-import BookControllerV2 from "../../app/controllers/CMS/BookControllerV2.js";
+import AuthorControllerV2 from "../../app/controllers/CMS/AuthorControllerV2.js";
 import {
-  createBookValidator,
-  bookIdValidator,
-  updateBookValidator,
-} from "../../validators/book.validator.js";
+  authorIdValidator,
+  createAuthorValidator,
+  updateAuthorValidator,
+} from "../../validators/author.validator.js";
 
 const router = express.Router();
 
 router.put(
   "/update/:id",
   verifyAccessToken,
-  roleMiddleware(`${ROLE_NAME.ADMIN}|${ROLE_NAME.PUBLISHER}`),
-  updateBookValidator,
+  roleMiddleware(`${ROLE_NAME.ADMIN}`),
+  updateAuthorValidator,
   validate,
   autoPickValidated(),
-  BookControllerV2.update
+  AuthorControllerV2.update
 );
 
 router.get(
   "/",
   verifyAccessToken,
-  roleMiddleware(`${ROLE_NAME.ADMIN}|${ROLE_NAME.PUBLISHER}`),
-  BookControllerV2.index
+  roleMiddleware(`${ROLE_NAME.ADMIN}`),
+  AuthorControllerV2.index
 );
 
 router.post(
   "/store",
   verifyAccessToken,
-  roleMiddleware(`${ROLE_NAME.ADMIN}|${ROLE_NAME.PUBLISHER}`),
-  createBookValidator,
+  roleMiddleware(`${ROLE_NAME.ADMIN}`),
+  createAuthorValidator,
   validate,
   autoPickValidated(),
-  BookControllerV2.store
+  AuthorControllerV2.store
 );
 
 router.delete(
   "/soft-delete",
   verifyAccessToken,
   roleMiddleware(`${ROLE_NAME.ADMIN}|${ROLE_NAME.PUBLISHER}`),
-  bookIdValidator,
+  authorIdValidator,
   validate,
   autoPickValidated(),
-  BookControllerV2.softDeleteByIds
+  AuthorControllerV2.softDeleteByIds
 );
 
 router.delete(
   "/force-delete",
   verifyAccessToken,
   roleMiddleware(`${ROLE_NAME.ADMIN}|${ROLE_NAME.PUBLISHER}`),
-  bookIdValidator,
+  authorIdValidator,
   validate,
   autoPickValidated(),
-  BookControllerV2.forceDelete
+  AuthorControllerV2.forceDelete
 );
 
 router.post(
   "/restore",
   verifyAccessToken,
   roleMiddleware(`${ROLE_NAME.ADMIN}|${ROLE_NAME.PUBLISHER}`),
-  bookIdValidator,
+  authorIdValidator,
   validate,
   autoPickValidated(),
-  BookControllerV2.restoreByIds
+  AuthorControllerV2.restoreByIds
 );
 
 export default router;
