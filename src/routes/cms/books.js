@@ -18,6 +18,7 @@ import {
   bookIdValidator,
   updateBookValidator,
 } from "../../validators/book.validator.js";
+import upload from "../../app/middleware/uploadMemory.js";
 
 const router = express.Router();
 
@@ -42,6 +43,7 @@ router.post(
   "/store",
   verifyAccessToken,
   roleMiddleware(`${ROLE_NAME.ADMIN}|${ROLE_NAME.PUBLISHER}`),
+  upload.single("image"),
   createBookValidator,
   validate,
   autoPickValidated(),

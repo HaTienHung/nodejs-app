@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import mongooseDelete from "mongoose-delete";
 import slugify from "slugify";
-import { STATUS } from "../../constants/status.js";
+import { BOOK_STATUS } from "../../constants/status.js";
 
 const Schema = mongoose.Schema;
 
@@ -11,7 +11,8 @@ const bookSchema = new Schema({
   price: Number,
   status: {
     type: String,
-    default: STATUS.DRAFT,
+    enum: Object.values(BOOK_STATUS),
+    default: BOOK_STATUS.DRAFT,
   },
   slug: {
     type: String,
@@ -32,6 +33,10 @@ const bookSchema = new Schema({
     ref: "Category",
     required: true,
   },
+  image_url: String,
+  image_public_id: String,
+  averageRating: { type: Number, default: 0 },
+  ratingCount: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   published_at: { type: Date, default: Date.now },

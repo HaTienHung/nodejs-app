@@ -1,13 +1,10 @@
-import Author from "../../models/Author.js";
-import Role from "../../models/Role.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import {
   generateRefreshToken,
   generateAccessToken,
 } from "../../../utils/jwt.js";
-import getTokenFromHeader from "../../../helpers/auth.helper.js";
-import verifyTokenFromHeader from "../../../helpers/auth.helper.js";
+import User from "../../models/User.js";
+
 class AuthControllerV2 {
   // [GET]  api/auth/cms/index
   async index(req, res) {

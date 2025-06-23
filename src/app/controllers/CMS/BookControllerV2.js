@@ -1,12 +1,9 @@
 import { ROLE_NAME } from "../../../constants/role.js";
-import verifyTokenFromHeader from "../../../helpers/auth.helper.js";
 import Book from "../../models/Book.js";
 import User from "../../models/User.js";
-import Publisher from "../../models/Publisher.js";
 import { BookPolicy } from "../../../policies/book.policy.js";
-import jwt from "jsonwebtoken";
-import { TYPE } from "../../../constants/verifyType.js";
 import { applyQuery } from "../../../helpers/applyQuery.helper.js";
+import streamUpload from "../../../helpers/cloudinaryUpload.helper.js";
 
 class BookControllerV2 {
   // [GET] /api/cms/books
@@ -63,6 +60,18 @@ class BookControllerV2 {
         data.publisher_id = user.publisher?.id;
       }
 
+      let image_url = "";
+      let image_public_id = "";
+
+      if (req.file) {
+        const result = await streamUpload(req.file.buffer, "books");
+        image_url = result.secure_url;
+        image_public_id = result.public_id;
+      }
+
+      data.image_url = image_url;
+      data.image_public_id = image_public_id;
+      data.price = parseFloat(req.body.price);
       const book = new Book(data);
       console.log(book);
 

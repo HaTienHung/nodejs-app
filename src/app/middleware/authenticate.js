@@ -6,10 +6,10 @@ export function verifyAccessToken(req, res, next) {
   try {
     // console.log(verifyTokenFromHeader(req, res, TYPE.ACCESS));
     const payload = verifyTokenFromHeader(req, res, TYPE.ACCESS);
-    console.log(payload);
+    // console.log(payload);
 
     req.user = payload;
-    console.log(req.user);
+    // console.log(req.user);
 
     next();
   } catch (err) {

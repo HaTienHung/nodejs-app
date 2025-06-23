@@ -12,11 +12,21 @@ async function loadRoutesFromDir(app, dirName, basePath) {
 
   for (const file of files) {
     if (file.endsWith(".js")) {
-      const routeModule = await import(path.join(fullPath, file));
-      const route = routeModule.default;
-      const routeName = file.replace(".js", "");
+      try {
+        const routeModule = await import(path.join(fullPath, file));
+        const route = routeModule.default;
+        const routeName = file.replace(".js", "");
 
-      app.use(`/api/${basePath}/${routeName}`, route);
+        if (!route) {
+          console.warn(`⚠️ Route "${routeName}" không export default`);
+          continue;
+        }
+
+        app.use(`/api/${basePath}/${routeName}`, route);
+        console.log(`✅ Đã mount route: /api/${basePath}/${routeName}`);
+      } catch (err) {
+        console.error(`❌ Lỗi khi load route ${file}:`, err.message);
+      }
     }
   }
 }
@@ -25,4 +35,3 @@ export default async function route(app) {
   await loadRoutesFromDir(app, "./app", "app");
   await loadRoutesFromDir(app, "./cms", "cms");
 }
-

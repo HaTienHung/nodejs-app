@@ -1,7 +1,5 @@
 import Book from "../../models/Book.js";
 import Category from "../../models/Category.js";
-import User from "../../models/User.js";
-import Publisher from "../../models/Publisher.js";
 
 class BookController {
   // [GET] api/app/books/collection
@@ -17,7 +15,13 @@ class BookController {
           "price",
           { field: "price", between: ["min_price", "max_price"] },
         ],
-        sortableFields: ["createdAt", "price", "title"],
+        sortableFields: [
+          "createdAt",
+          "price",
+          "title",
+          "averageRating",
+          "ratingCount",
+        ],
       });
       return res.status(200).json(books);
     } catch (error) {
