@@ -18,14 +18,14 @@ async function loadRoutesFromDir(app, dirName, basePath) {
         const routeName = file.replace(".js", "");
 
         if (!route) {
-          console.warn(`⚠️ Route "${routeName}" không export default`);
+          console.warn(`Route "${routeName}" không export default`);
           continue;
         }
 
         app.use(`/api/${basePath}/${routeName}`, route);
-        console.log(`✅ Đã mount route: /api/${basePath}/${routeName}`);
+        console.log(`Đã mount route: /api/${basePath}/${routeName}`);
       } catch (err) {
-        console.error(`❌ Lỗi khi load route ${file}:`, err.message);
+        console.error(`Lỗi khi load route ${file}:`, err.message);
       }
     }
   }

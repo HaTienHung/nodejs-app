@@ -5,8 +5,6 @@ import {
   generateRefreshToken,
   generateAccessToken,
 } from "../../../utils/jwt.js";
-import verifyTokenFromHeader from "../../../helpers/auth.helper.js";
-import { TYPE } from "../../../constants/verifyType.js";
 
 class AuthController {
   // [POST]  api/app/auth/login
