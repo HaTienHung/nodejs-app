@@ -1,36 +1,36 @@
-import User from "../models/User.js";
+import User from "../../models/User.js";
 
 class UserController {
-  // [GET]  api/users
-  async index(req, res) {
-    try {
-      const users = await User.find({});
-      res.json(users);
-    } catch (err) {
-      res.status(500).json({ error: "Internal server error" });
-    }
-  }
+  // // [GET]  api/users
+  // async index(req, res) {
+  //   try {
+  //     const users = await User.find({});
+  //     res.json(users);
+  //   } catch (err) {
+  //     res.status(500).json({ error: "Internal server error" });
+  //   }
+  // }
   // [GET]  api/users/me
-  async show(req, res) {
-    try {
-      const users = await User.find({});
-      res.json(users);
-    } catch (err) {
-      res.status(500).json({ error: "Internal server error" });
-    }
-  }
-  // [POST]  api/users/store
-  async store(req, res) {
-    console.log("[Validated]", req.validated);
-    const { name, email, phone_number, password, age, address } = req.validated;
-
-    console.log(name);
-
-    // Field "is_admin", "role_id", ... sẽ không bao giờ lọt vào đây
-    const user = await User.create(req.validated);
-
-    res.status(201).json(user);
-  }
+  //   async show(req, res) {
+  //     try {
+  //       const users = await User.find({});
+  //       res.json(users);
+  //     } catch (err) {
+  //       res.status(500).json({ error: "Internal server error" });
+  //     }
+  //   }
+  //   // [POST]  api/users/store
+  //   async store(req, res) {
+  //     console.log("[Validated]", req.validated);
+  //     const { name, email, phone_number, password, age, address } = req.validated;
+  //
+  //     console.log(name);
+  //
+  //     // Field "is_admin", "role_id", ... sẽ không bao giờ lọt vào đây
+  //     const user = await User.create(req.validated);
+  //
+  //     res.status(201).json(user);
+  //   }
   // [PUT]  api/users/update/:id
   async update(req, res) {
     try {
