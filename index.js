@@ -4,6 +4,9 @@ import route from "./src/routes/index.js";
 import "./src/config/env.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import http from "http";
+import { Server } from "socket.io";
+import { socketNotification } from "./src/sockets/notification.socket.js";
 
 db.connect();
 
@@ -20,9 +23,24 @@ const __dirname = path.dirname(__filename);
 
 // Cấu hình static files
 app.use(express.static(path.join(__dirname, "public")));
+const server = http.createServer(app);
+
 await route(app);
 
-app.listen(port, () =>
+const io = new Server(server, {
+  cors: { origin: "*" },
+});
+
+io.on("connection", (socket) => {
+  const userId = socket.handshake.query.user_id;
+  if (userId) socket.join(userId); // Gán userId vào room riêng
+
+  console.log(`User connected: ${userId}`);
+});
+
+socketNotification(io);
+
+server.listen(port, () =>
   console.log(`Example app listening at http://localhost:${port}`)
 );
 

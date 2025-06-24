@@ -1,5 +1,6 @@
 import Book from "../../models/Book.js";
 import Category from "../../models/Category.js";
+import cacheWrapper from "../../../helpers/cacheWrapper.helper.js";
 
 class BookController {
   // [GET] api/app/books/collection
@@ -31,10 +32,17 @@ class BookController {
   // [GET] api/app/books/:slug
   async show(req, res) {
     try {
-      const book = await Book.findOne({ slug: req.params.slug });
+      const slug = req.params.slug;
+      const cacheKey = `book:detail:${slug}`;
+
+      const book = await cacheWrapper(cacheKey, 86400, () =>
+        Book.findOne({ slug })
+      );
+
       if (!book) {
         return res.status(404).json({ message: "Không tìm thấy sách" });
       }
+
       return res.status(200).json(book);
     } catch (error) {
       console.error("Lỗi khi lấy sách:", error);
@@ -44,16 +52,27 @@ class BookController {
   // [GET] api/app/books/category/:slug
   async listBookByCategorySlug(req, res) {
     try {
-      const category = await Category.findOne({ slug: req.params.slug });
-      const books = await Book.findOne({ category_id: category.id });
-      if (!books) {
-        return res
-          .status(404)
-          .json({ message: "Không tìm thấy sách thuộc danh mục " });
+      const slug = req.params.slug;
+      const cacheKey = `books:by-category:${slug}`;
+
+      // Lấy dữ liệu từ Redis (hoặc fallback gọi DB)
+      const data = await cacheWrapper(cacheKey, 600, async () => {
+        const category = await Category.findOne({ slug });
+        if (!category) return null;
+
+        const books = await Book.find({ category_id: category._id });
+        return books;
+      });
+
+      if (!data || data.length === 0) {
+        return res.status(404).json({
+          message: "Không tìm thấy sách thuộc danh mục",
+        });
       }
-      return res.status(200).json(books);
+
+      return res.status(200).json(data);
     } catch (error) {
-      console.error("Lỗi khi lấy sách:", error);
+      console.error("Lỗi khi lấy sách theo danh mục:", error);
       return res.status(500).json({ message: "Lỗi server" });
     }
   }

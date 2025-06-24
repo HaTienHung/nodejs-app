@@ -5,6 +5,7 @@ import OrderItem from "../../models/OrderItem.js";
 import Export from "../../models/Export.js";
 import Inventory from "../../models/Inventory.js";
 import checkAvailableStock from "../../../helpers/checkAvailableStock.helper.js";
+import { sendUserNotification } from "../../../helpers/sendNotification.helper.js";
 
 class CartController {
   // [GET] /api/app/cart
@@ -197,7 +198,7 @@ class CartController {
         if (!book) throw new Error(`Không tìm thấy sách với ID ${book_id}`);
 
         // Kiểm tra tồn kho
-        const isAvailable = await checkAvailabelStock(book_id, quantity);
+        const isAvailable = await checkAvailableStock(book_id, quantity);
         if (!isAvailable) {
           throw new Error(`Sách "${book.title}" không đủ tồn kho`);
         }
@@ -239,6 +240,14 @@ class CartController {
           },
         ]);
       }
+
+      (async () => {
+        try {
+          await sendUserNotification(req.user.id, "Đặt hàng thành công", "...");
+        } catch (e) {
+          console.error(e);
+        }
+      })();
 
       // Xóa các item đã đặt khỏi giỏ hàng
       cart.items = cart.items.filter(
