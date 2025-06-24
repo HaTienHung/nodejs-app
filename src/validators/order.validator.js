@@ -1,4 +1,5 @@
 import { body } from "express-validator";
+import { ORDER_STATUS } from "../constants/status.js";
 
 export const createOrderValidator = [
   body("items")
@@ -14,4 +15,14 @@ export const createOrderValidator = [
   body("paymentMethod")
     .notEmpty()
     .withMessage("Phương thức thanh toán không được bỏ trống"),
+];
+
+export const updateOrderStatusValidator = [
+  body("status")
+    .notEmpty()
+    .withMessage("Trạng thái là bắt buộc")
+    .isIn(Object.values(ORDER_STATUS))
+    .withMessage(
+      `Trạng thái phải là một trong: ${Object.values(ORDER_STATUS).join(", ")}`
+    ),
 ];

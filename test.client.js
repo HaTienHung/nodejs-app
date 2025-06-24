@@ -19,7 +19,7 @@ socket.on("notification", (data) => {
 });
 
 socket.on("disconnect", () => {
-  console.log(" Disconnected");
+  console.log("Disconnected");
 });
 
 socket.on("connect_error", (err) => {
