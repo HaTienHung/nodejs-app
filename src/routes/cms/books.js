@@ -26,6 +26,7 @@ router.put(
   "/update/:id",
   verifyAccessToken,
   roleMiddleware(`${ROLE_NAME.ADMIN}|${ROLE_NAME.PUBLISHER}`),
+  upload.single("image"),
   updateBookValidator,
   validate,
   autoPickValidated(),

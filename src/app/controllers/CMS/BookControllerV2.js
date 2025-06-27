@@ -4,6 +4,7 @@ import User from "../../models/User.js";
 import { BookPolicy } from "../../../policies/book.policy.js";
 import { applyQuery } from "../../../helpers/applyQuery.helper.js";
 import streamUpload from "../../../helpers/cloudinaryUpload.helper.js";
+import cloudinary from "../../../config/cloudinary.js";
 
 class BookControllerV2 {
   // [GET] /api/cms/books
@@ -111,6 +112,19 @@ class BookControllerV2 {
           .status(403)
           .json({ message: "Bạn không có quyền sửa sách này" });
       }
+      console.log(req.file);
+
+      if (req.file) {
+        if (book.image_public_id) {
+          await cloudinary.uploader.destroy(book.image_public_id);
+        }
+        const result = await streamUpload(req.file.buffer, "books");
+        console.log("123");
+
+        req.validated.image_url = result.secure_url;
+        req.validated.image_public_id = result.public_id;
+      }
+
       // Cập nhật các trường cho phép
       Object.assign(book, req.validated);
 
@@ -159,7 +173,14 @@ class BookControllerV2 {
         .status(403)
         .json({ message: "Bạn không có quyền xoá sách của NXB khác !!!" });
     }
-    await Promise.all(books.map((book) => book.deleteOne()));
+    await Promise.all(
+      books.map(async (book) => {
+        if (book.image_public_id) {
+          await cloudinary.uploader.destroy(book.image_public_id);
+        }
+        await book.deleteOne();
+      })
+    );
     return res.status(200).json("Xoá thành công !!!");
   }
 
