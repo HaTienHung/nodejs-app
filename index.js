@@ -7,7 +7,6 @@ import { fileURLToPath } from "url";
 import http from "http";
 import { Server } from "socket.io";
 import { socketNotification } from "./src/sockets/notification.socket.js";
-
 db.connect();
 
 const app = express();
@@ -16,6 +15,7 @@ const port = 3000;
 
 app.use(express.json()); // Parse JSON body
 app.use(express.urlencoded({ extended: true }));
+// app.use(xssClean());
 
 // Khôi phục __dirname trong ES6
 const __filename = fileURLToPath(import.meta.url);

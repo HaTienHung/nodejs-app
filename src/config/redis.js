@@ -2,7 +2,9 @@
 import { createClient } from "redis";
 
 const redis = createClient({
-  url: process.env.REDIS_URL, // Hoặc REDIS_URL từ env
+  host: "redis", // tên service redis
+  port: 6379, // Hoặc REDIS_URL từ env
+  url: process.env.REDIS_URL,
 });
 
 redis.on("error", (err) => {

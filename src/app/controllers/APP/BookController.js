@@ -1,6 +1,7 @@
 import Book from "../../models/Book.js";
 import Category from "../../models/Category.js";
 import cacheWrapper from "../../../helpers/cacheWrapper.helper.js";
+import { applyQuery } from "../../../helpers/applyQuery.helper.js";
 
 class BookController {
   // [GET] api/app/books/collection
@@ -26,7 +27,13 @@ class BookController {
       });
       return res.status(200).json(books);
     } catch (error) {
-      return res.status(500), json("Failed");
+      console.error(error); // Log ra server
+
+      return res.status(500).json({
+        message: "Internal Server Error",
+        error: error.message, // Lấy message chính
+        stack: error.stack, // (Tùy) Trả stack trace (chỉ nên cho môi trường dev)
+      });
     }
   }
   // [GET] api/app/books/:slug
